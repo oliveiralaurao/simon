@@ -10,12 +10,19 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 
-// Busca as pontuações do usuário
-$query = "SELECT pontuacao, data_partida FROM pontuacoes WHERE usuarios_id_usuario = ? ORDER BY data_partida DESC";
-$stmt = $mysqli->prepare($query);
-$stmt->bind_param("i", $id_usuario);
-$stmt->execute();
-$result = $stmt->get_result();
+// Busca as pontuações do usuário para Simon
+$querySimon = "SELECT pontuacao, data_partida FROM pontuacoes WHERE usuarios_id_usuario = ? ORDER BY data_partida DESC";
+$stmtSimon = $mysqli->prepare($querySimon);
+$stmtSimon->bind_param("i", $id_usuario);
+$stmtSimon->execute();
+$resultSimon = $stmtSimon->get_result();
+
+// Busca as pontuações do usuário para River
+$queryRiver = "SELECT pontuacao, data_inicio FROM partidas WHERE usuarios_id_usuario = ? ORDER BY data_inicio DESC";
+$stmtRiver = $mysqli->prepare($queryRiver);
+$stmtRiver->bind_param("i", $id_usuario);
+$stmtRiver->execute();
+$resultRiver = $stmtRiver->get_result();
 
 ?>
 <!DOCTYPE html>
@@ -35,54 +42,84 @@ $result = $stmt->get_result();
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.php">Jogo</a>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="index.php">Simon</a>
         </li>
-      <li class="nav-item">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="river.php">River Raid</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="ranking.php">Ranking</a>
         </li>
-      <li class="nav-item">
+        <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="pontuar.php">Pontuação</a>
         </li>
       </ul>
       <form class="d-flex" role="search">
-      <a href="logout.php" class="btn btn-danger">Sair</a>
+        <a href="logout.php" class="btn btn-danger">Sair</a>
       </form>
     </div>
   </div>
 </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center">Suas Pontuações</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Pontuação</th>
-                    <th scope="col">Data</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($result->num_rows > 0): ?>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($row['pontuacao']); ?></td>
-                            <td><?php echo htmlspecialchars(date('d/m/Y H:i:s', strtotime($row['data_partida']))); ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
+<div class="container mt-5">
+    <h1 class="text-center">Suas Pontuações - Simon</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Pontuação</th>
+                <th scope="col">Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($resultSimon->num_rows > 0): ?>
+                <?php while ($row = $resultSimon->fetch_assoc()): ?>
                     <tr>
-                        <td colspan="2" class="text-center">Nenhuma pontuação encontrada.</td>
+                        <td><?php echo htmlspecialchars($row['pontuacao']); ?></td>
+                        <td><?php echo htmlspecialchars(date('d/m/Y H:i:s', strtotime($row['data_partida']))); ?></td>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="2" class="text-center">Nenhuma pontuação encontrada.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<div class="container mt-5">
+    <h1 class="text-center">Suas Pontuações - River</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Pontuação</th>
+                <th scope="col">Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($resultRiver->num_rows > 0): ?>
+                <?php while ($row = $resultRiver->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['pontuacao']); ?></td>
+                        <td><?php echo htmlspecialchars(date('d/m/Y H:i:s', strtotime($row['data_inicio']))); ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="2" class="text-center">Nenhuma pontuação encontrada.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
 
 <?php
-$stmt->close();
+$stmtSimon->close();
+$stmtRiver->close();
 $mysqli->close(); // Fecha a conexão com o banco de dados
 ?>

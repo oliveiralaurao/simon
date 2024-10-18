@@ -30,7 +30,10 @@ if (!isset($_SESSION['email'])) {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.php">Jogo</a>
+          <a class="nav-link active" aria-current="page" href="index.php">Simon</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="river.php">River Raid</a>
         </li>
       <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="ranking.php">Ranking</a>
